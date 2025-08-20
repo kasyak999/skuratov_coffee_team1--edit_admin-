@@ -43,10 +43,6 @@ logger.add(
 
 BASE_DIR = Path(__file__).resolve().parent
 
-from fastapi.templating import Jinja2Templates
-
-
-# templates = Jinja2Templates(directory=BASE_DIR / "templates")
 
 def static(path: str):
     return f"/statics/{path}"
@@ -61,7 +57,6 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     yield
     logger.info('Завершение работы приложения')
 
-# from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
 
 # Создаем FastAPI приложение
 app = FastAPI(
@@ -70,13 +65,6 @@ app = FastAPI(
     version=settings.version,
     lifespan=lifespan,
 )
-
-# app.add_middleware(HTTPSRedirectMiddleware)
-
-# from starlette.middleware.proxy_headers import ProxyHeadersMiddleware
-
-# app.add_middleware(ProxyHeadersMiddleware, trusted_hosts="*")
-
 
 admin = Admin(
     app,
@@ -94,6 +82,13 @@ def relative_url_for(ctx, name: str, **kwargs):
     url = str(request.url_for(name, **kwargs))
     return url.replace(str(request.base_url), "/")
 
+
+app.mount(
+    "/statics",
+    StaticFiles(directory=BASE_DIR / "static"),
+    name="statics"
+)
+
 # def relative_url_for(request: Request, name: str, **kwargs):
 #     """Функция, возвращающая относительный URL"""
 #     # return f"/{name}/{kwargs.get("path", "")}"
@@ -103,12 +98,6 @@ def relative_url_for(ctx, name: str, **kwargs):
 
 
 # admin.templates.env.globals['url_for'] = relative_url_for
-
-app.mount(
-    "/statics",
-    StaticFiles(directory=BASE_DIR / "static"),
-    name="statics"
-)
 
 admin.add_view(UserAdmin)
 admin.add_view(CafeAdmin)
