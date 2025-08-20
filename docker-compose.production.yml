@@ -27,7 +27,7 @@ services:
     image: kasyak999/test_skuratov_coffee_team1_web
     command: >
       sh -c "alembic upgrade head &&
-      uvicorn app.main:app --host 0.0.0.0 --port 7000"
+      uvicorn app.main:app --host 0.0.0.0 --port 7000 --proxy-headers"
     depends_on:
       - db
       - redis

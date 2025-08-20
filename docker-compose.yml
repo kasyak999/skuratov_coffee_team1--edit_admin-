@@ -26,7 +26,7 @@ services:
     build: ./src/
     command: >
       sh -c "alembic upgrade head &&
-      uvicorn app.main:app --host 0.0.0.0 --port 7000"
+      uvicorn app.main:app --host 0.0.0.0 --port 7000 --proxy-headers"
     depends_on:
       - db
       - redis
