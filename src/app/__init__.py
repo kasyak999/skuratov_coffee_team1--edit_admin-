@@ -1,0 +1,1 @@
+from app.core.celery_worker import celery_app  # noqa

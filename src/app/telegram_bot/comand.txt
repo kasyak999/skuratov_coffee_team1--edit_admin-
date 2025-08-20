@@ -1,0 +1,17 @@
+admin: 
+    /create_cafe
+    /edit_cafe
+    /create_user
+    /edit_user
+manager:
+    /user_conf
+    /creating_shifts
+    /edit_shifts
+    /change_booking
+    /employment_conf
+    /monitoring
+barista:
+    /start
+    /slots
+    /my_slots
+    /going

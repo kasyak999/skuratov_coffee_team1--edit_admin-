@@ -1,0 +1,74 @@
+volumes:
+  pg_data:
+  data_redis:
+  static:
+services:
+  db:
+    image: postgres:13
+    env_file: .env
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    ports:
+      - "${POSTGRES_PORT}:5432"
+  redis:
+    build: ./src/redis/
+    container_name: redis_service
+    restart: always
+    ports:
+      - "6379:6379"
+    command: [
+      "redis-server", "/usr/local/etc/redis/redis.conf",
+      "--requirepass", "${REDIS_PASS}"
+    ]
+    volumes:
+    - data_redis:/data
+  web:
+    build: ./src/
+    command: >
+      sh -c "alembic upgrade head &&
+      uvicorn app.main:app --host 0.0.0.0 --port 7000 --reload"
+    depends_on:
+      - db
+      - redis
+    env_file: .env
+    ports:
+      - "7000:7000"
+    volumes:
+    - static:/app/app/static
+  celery_worker:
+    build: ./src/
+    container_name: celery_worker
+    command: celery -A app.core.celery_worker worker --loglevel=info
+    depends_on:
+      - web
+    env_file:
+      - .env 
+  flower:
+    build: ./src/
+    container_name: flower
+    command: >
+      sh -c "celery -A app.core.celery_worker flower
+      --basic_auth=${SUPERUSER_TELEGRAM_ID}:${SUPERUSER_PASSWORD}
+      --url_prefix=/flower/"
+    ports:
+      - "5555:5555"
+    depends_on:
+      - celery_worker
+    env_file:
+      - .env 
+  nginx:
+    build: ./src/nginx/
+    depends_on:
+      - web
+      - flower
+    ports:
+      - 8000:80
+    volumes:
+      - static:/static
+  # bot:
+  #   build: ./src/
+  #   command: python -m app.telegram_bot.bot
+  #   depends_on:
+  #     - nginx
+  #   env_file:
+  #     - .env
