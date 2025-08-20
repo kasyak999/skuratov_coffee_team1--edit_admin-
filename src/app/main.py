@@ -148,14 +148,9 @@ async def ping_db(
         return {'status': 'ошибка', 'detail': str(e)}
 
 
-@app.get("/check")
-async def check(request: Request):
-    return {
-        "url": str(request.url),
-        "base_url": str(request.base_url),
-        "scheme": request.url.scheme,
-
-    }
+@app.get("/test")
+async def test(request: Request):
+    return {"url": str(request.url), "base_url": str(request.base_url)}
 
 app.add_exception_handler(BaseAppException, base_exception_handler)
 app.add_exception_handler(ValueError, validation_error_handler)
