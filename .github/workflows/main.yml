@@ -2,7 +2,7 @@ name: Основной рабочий процесс
 on:
   push:
     branches:
-    - new_admin
+    - main
 jobs:
     # backend_tests:
     #   permissions: 
