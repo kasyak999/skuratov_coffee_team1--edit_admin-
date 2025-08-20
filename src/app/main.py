@@ -61,7 +61,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     yield
     logger.info('Завершение работы приложения')
 
-from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
+# from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
 
 # Создаем FastAPI приложение
 app = FastAPI(
@@ -71,7 +71,7 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-app.add_middleware(HTTPSRedirectMiddleware)
+# app.add_middleware(HTTPSRedirectMiddleware)
 
 # from starlette.middleware.proxy_headers import ProxyHeadersMiddleware
 
