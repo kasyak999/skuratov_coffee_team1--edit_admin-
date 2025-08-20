@@ -12,7 +12,7 @@ services:
       - "${POSTGRES_PORT}:5432"
   redis:
     image: kasyak999/skuratov_coffee_team1_redis
-    container_name: redis_service
+    container_name: redis_service_c
     restart: always
     ports:
       - "6379:6379"
