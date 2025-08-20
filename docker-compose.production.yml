@@ -11,7 +11,7 @@ services:
     ports:
       - "${POSTGRES_PORT}:5432"
   redis:
-    image: kasyak999/skuratov_coffee_team1_redis
+    image: kasyak999/test_skuratov_coffee_team1_redis
     container_name: redis_service_c
     restart: always
     ports:
@@ -24,7 +24,7 @@ services:
     - data_redis:/data
 
   web:
-    image: kasyak999/skuratov_coffee_team1_web
+    image: kasyak999/test_skuratov_coffee_team1_web
     command: >
       sh -c "alembic upgrade head &&
       uvicorn app.main:app --host 0.0.0.0 --port 7000 --reload"
@@ -35,7 +35,7 @@ services:
     volumes:
     - static:/app/app/static
   celery_worker:
-    image: kasyak999/skuratov_coffee_team1_web
+    image: kasyak999/test_skuratov_coffee_team1_web
     container_name: celery_worker
     command: celery -A app.core.celery_worker worker --loglevel=info
     depends_on:
@@ -43,7 +43,7 @@ services:
     env_file:
       - .env
   flower:
-    image: kasyak999/skuratov_coffee_team1_web
+    image: kasyak999/test_skuratov_coffee_team1_web
     container_name: flower
     command: >
       sh -c "celery -A app.core.celery_worker flower
@@ -56,7 +56,7 @@ services:
     env_file:
       - .env
   nginx:
-    image: kasyak999/skuratov_coffee_team1_nginx
+    image: kasyak999/test_skuratov_coffee_team1_nginx
     depends_on:
       - web
       - flower
@@ -65,7 +65,7 @@ services:
     volumes:
       - static:/static
   bot:
-    image: kasyak999/skuratov_coffee_team1_web
+    image: kasyak999/test_skuratov_coffee_team1_web
     command: python -m app.telegram_bot.bot
     depends_on:
       - nginx
