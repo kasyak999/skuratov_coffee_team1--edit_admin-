@@ -70,7 +70,9 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+# from starlette.middleware.proxy_headers import ProxyHeadersMiddleware
 
+# app.add_middleware(ProxyHeadersMiddleware, trusted_hosts="*")
 
 
 admin = Admin(
