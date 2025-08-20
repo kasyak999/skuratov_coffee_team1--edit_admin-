@@ -88,3 +88,5 @@ jobs:
             context: ./src/nginx/
             push: true
             tags: kasyak999/test_skuratov_coffee_team1_nginx:latest
+
+            
