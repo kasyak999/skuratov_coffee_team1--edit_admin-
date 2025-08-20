@@ -44,11 +44,6 @@ logger.add(
 BASE_DIR = Path(__file__).resolve().parent
 
 
-def static(path: str):
-    return f"/statics/{path}"
-
-
-
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     """Контекстный менеджер для инициализации приложения."""
@@ -65,6 +60,8 @@ app = FastAPI(
     version=settings.version,
     lifespan=lifespan,
 )
+from fastapi.templating import Jinja2Templates
+templates = Jinja2Templates(directory=str(BASE_DIR / "static"))
 
 admin = Admin(
     app,
@@ -72,15 +69,12 @@ admin = Admin(
     authentication_backend=auth_backend,
     templates_dir=BASE_DIR / "templates",
 )
+admin.templates.env.globals['static'] = lambda filename: f"/statics/{filename}"
+
+
+
 
 from fastapi import Request
-from jinja2 import pass_context
-
-@pass_context
-def relative_url_for(ctx, name: str, **kwargs):
-    request: Request = ctx["request"]
-    url = str(request.url_for(name, **kwargs))
-    return url.replace(str(request.base_url), "/")
 
 
 app.mount(
@@ -88,6 +82,8 @@ app.mount(
     StaticFiles(directory=BASE_DIR / "static"),
     name="statics"
 )
+
+
 
 # def relative_url_for(request: Request, name: str, **kwargs):
 #     """Функция, возвращающая относительный URL"""
